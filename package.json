@@ -6,9 +6,18 @@
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "antd": "^4.16.13",
+    "font-awesome": "^4.7.0",
+    "pretty-checkbox": "^3.0.3",
     "react": "^17.0.2",
+    "react-countup": "^6.1.0",
     "react-dom": "^17.0.2",
+    "react-icons": "^4.3.1",
+    "react-paginate": "^8.0.0",
     "react-scripts": "4.0.3",
+    "react-slick": "^0.28.1",
+    "react-visibility-sensor": "^5.1.1",
+    "slick-carousel": "^1.8.1",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
