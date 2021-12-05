@@ -1,10 +1,67 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { useFormik } from 'formik'
 import { Tabs, Rate, Progress } from 'antd';
+import * as Yup from 'yup'
+
 import PaginationPages from '../../Components/Pagination/PaginationPages';
 import './PersonalPages.css'
+import { http } from '../../Util/setting';
+import { _userUpdate } from '../../Redux/action/UserAction';
 
 const { TabPane } = Tabs;
-export default function PersonalPages() {
+export default function PersonalPages (props) {
+
+    const dispatch = useDispatch()
+
+    const studentInfo = useSelector(state => state.UserReducer.credentials)
+    // console.log(studentInfo);
+
+    const _handleUpdate = (values, formik) => {
+
+        // console.log(values.soDT)
+        const action = _userUpdate(values, formik)
+        dispatch(action)
+    }
+
+    // Formik form
+    const formik = useFormik({
+        initialValues: {
+            taiKhoan: studentInfo.taiKhoan,
+            matKhau: "",
+            hoTen: "",
+            email: "",
+            soDT: "",
+            maLoaiNguoiDung: studentInfo.maLoaiNguoiDung,
+            maNhom: "GP01",
+        },
+        validationSchema: Yup.object().shape({
+            taiKhoan: Yup.string()
+                .min(2, 'Tài khoản quá ít kí tự')
+                .max(16, 'Tài khoản quá 16 kí tự')
+                .required('Tài khoản không được để trống'),
+
+            matKhau: Yup.string()
+                .required('Tài khoản không được để trống')
+                .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Mật khẩu phải ít nhất 8 tự gồm chữ, số, và kí tự đặc biệt'),
+
+            hoTen: Yup.string()
+                .required('Tên không được để trống')
+                .matches(/^[a-zA-Z_ÀÁÂÃÈÉÊẾÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶ" + "ẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợ" + "ụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹý\\s]+$/, 'Chỉ nhập kí tự chữ'),
+
+            email: Yup.string().email('Email không hợp lệ').required('Email không được để trống'),
+
+            soDT: Yup.string()
+                .required('Số điện thoại không được để trống')
+                .matches(/([\+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/, 'Số điện thoại chưa đúng định đạng'),
+        }),
+        onSubmit: _handleUpdate
+    })
+
+    useEffect(() => {
+        
+    }, [])
+
     return (
         <div>
             <div className='PersonalBody'>
@@ -13,12 +70,12 @@ export default function PersonalPages() {
                         <div className='row'>
                             <div className='col-9'>
                                 <div className='smallCardLeft'>
-                                    <img src={require("../../Assets/Img/imgPersonal/personcard.jpg").default} alt="" />
+                                    <img src={studentInfo.img} alt="" />
                                     <div>
                                         <div className='ml-3'>
                                             <div className='smallTitle'>
-                                                <p className='smallCardTitle'>Hanh Clint</p>
-                                                <p className='subTextDetail'>Học viên</p>
+                                                <p className='smallCardTitle'>{studentInfo.taiKhoan}</p>
+                                                <p className='subTextDetail'>{studentInfo.hoTen}</p>
                                                 <p className='subTextDetail'>24 / 11 / 2021</p>
                                             </div>
                                         </div>
@@ -40,19 +97,19 @@ export default function PersonalPages() {
                                     <div className='row left'>
                                         <div className='col-6'>
                                             <div>
-                                                <p>Email:<span className='ml-2'>hanhdevit@gmail.com</span></p>
-                                                <p>Họ và tên: <span className='ml-2'>Ngô Văn Hạnh</span></p>
-                                                <p>Số điện thoại: <span className='ml-2'>058 303 72734</span></p>
+                                                <p>Email:<span className='ml-2'>{studentInfo.email}</span></p>
+                                                <p>Họ và tên: <span className='ml-2'>{studentInfo.hoTen}</span></p>
+                                                <p>Số điện thoại: <span className='ml-2'>{studentInfo.soDt ? studentInfo.soDt : studentInfo.soDT}</span></p>
 
                                             </div>
                                         </div>
                                         <div className='col-6'>
-                                            <p>Tài khoản: <span className='ml-2'>Bá đạo trên từng hạt gạo</span></p>
-                                            <p>Mật khẩu: <span className='ml-2'>Ngô Văn Hạnh</span></p>
-                                            <p>Số điện thoại: <span className='ml-2'>058 303 72734</span></p>
+                                            <p>Tài khoản: <span className='ml-2'>{studentInfo.taiKhoan}</span></p>
+                                            <p>Nhóm: <span className='ml-2'>{studentInfo.maNhom}</span></p>
+                                            <p>Đối tượng: <span className='ml-2'>{studentInfo.maLoaiNguoiDung === "HV" ? " Học viên" : " Giáo viên"}</span></p>
                                         </div>
                                         <div>
-                                            <button className='custom-btn btnGlobal btnInfo'>Cập nhật</button>
+                                            <button data-toggle="modal" data-target="#myModal" className='custom-btn btnGlobal btnInfo'>Cập nhật</button>
                                         </div>
                                     </div>
                                 </div>
@@ -149,7 +206,7 @@ export default function PersonalPages() {
                                                     </div>
                                                 </div>
                                             </div>
-                                           
+
                                         </div>
                                     </div>
                                 </div>
@@ -314,10 +371,72 @@ export default function PersonalPages() {
                             </div>
 
                         </TabPane>
-
                     </Tabs>
-
                 </div>
+
+                <div class="modal fade" id="myModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Chỉnh sửa thông tin cá nhân</h5>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body modalUpdateBody">
+                                <form action="#" onSubmit={formik.handleSubmit}>
+                                    <input
+                                        onBlur={formik.handleBlur}
+                                        onChange={formik.handleChange}
+                                        type="text" placeholder="Tài khoản"
+                                        name='taiKhoan'
+                                        value={formik.values.taiKhoan}
+                                        disabled />
+                                    {formik.errors.taiKhoan && formik.touched.taiKhoan ? <div className='errorMessage'>{formik.errors.taiKhoan}</div> : <div className='message'></div>}
+
+                                    <input
+                                        onBlur={formik.handleBlur}
+                                        onChange={formik.handleChange}
+                                        type="text" placeholder="Họ tên"
+                                        name='hoTen'
+                                        value={formik.values.hoTen} />
+                                    {formik.errors.hoTen && formik.touched.hoTen ? <div className='errorMessage'>{formik.errors.hoTen}</div> : <div className='message'></div>}
+
+                                    <input
+                                        onBlur={formik.handleBlur}
+                                        onChange={formik.handleChange}
+                                        type="password" placeholder="Mật khẩu"
+                                        name='matKhau'
+                                        value={formik.values.matKhau} />
+                                    {formik.errors.matKhau && formik.touched.matKhau ? <div className='errorMessage' >{formik.errors.matKhau}</div> : <div className='message'></div>}
+
+                                    <input
+                                        onBlur={formik.handleBlur}
+                                        onChange={formik.handleChange}
+                                        type="email" placeholder="Email"
+                                        name="email"
+                                        value={formik.values.email} />
+                                    {formik.errors.email && formik.touched.email ? <div className='errorMessage'>{formik.errors.email}</div> : <div className='message'></div>}
+
+                                    <input
+                                        onBlur={formik.handleBlur}
+                                        onChange={formik.handleChange}
+                                        type="phone" placeholder="Số điện thoại"
+                                        name='soDT'
+                                        value={formik.values.soDT} />
+                                    {formik.errors.soDT && formik.touched.soDT ? <div className='errorMessage'>{formik.errors.soDT}</div> : <div className='message'></div>}
+
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-success" >Hoàn thành</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                                    </div>
+                                </form>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     )

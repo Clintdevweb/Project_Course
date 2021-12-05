@@ -1,9 +1,208 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import './login.css'
+// import { SignUp } from '../../Redux/action/User'
+import { http } from '../../Util/setting'
+import axios from 'axios'
+import { userLogin } from '../../Redux/action/UserAction'
+import { useHistory } from 'react-router'
+
+
 
 export default function Login() {
+    const dispatch = useDispatch()
+    const history = useHistory()
+
+    // Xử lý giao diện
+    const [classContainer, setClassContainer] = useState('container')
+    const addID = () => {
+        setClassContainer('container right-panel-active')
+    }
+    const delID = () => {
+        setClassContainer('container')
+    }
+
+    // Handle SignUp
+    const _handleSignup = async (values) => {
+        // console.log(values);
+        try {
+            let result = await http.post('/api/QuanLyNguoiDung/DangKy', values)
+
+            if (result.request.status === 200) {
+                formik.resetForm()
+                alert('Đăng kí thành công')
+            }
+
+        } catch (errors) {
+            alert(errors.response.data)
+        }
+    }
+
+    const formik = useFormik({
+        initialValues: {
+            taiKhoan: "",
+            matKhau: "",
+            hoTen: "",
+            email: "",
+            soDT: "",
+            maNhom: "GP01",
+        },
+        validationSchema: Yup.object().shape({
+            taiKhoan: Yup.string()
+                .min(2, 'Tài khoản quá ít kí tự')
+                .max(16, 'Tài khoản quá 16 kí tự')
+                .required('Tài khoản không được để trống'),
+
+            matKhau: Yup.string()
+                .required('Tài khoản không được để trống')
+                .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Mật khẩu phải ít nhất 8 tự gồm chữ, số, và kí tự đặc biệt'),
+
+            hoTen: Yup.string()
+                .required('Tên không được để trống')
+                .matches(/^[a-zA-Z_ÀÁÂÃÈÉÊẾÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶ" + "ẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợ" + "ụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹý\\s]+$/, 'Chỉ nhập kí tự chữ'),
+
+            email: Yup.string().email('Email không hợp lệ').required('Email không được để trống'),
+
+            soDT: Yup.string()
+                .required('Số điện thoại không được để trống')
+                .matches(/([\+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/, 'Số điện thoại chưa đúng định đạng'),
+        }),
+        onSubmit: _handleSignup,
+    })
+
+    // Handle Login
+    const _handleLogin = async (values, formikLogin) => {
+
+        const action = userLogin(values, formikLogin)
+
+        await dispatch(action)
+
+        if (localStorage.getItem('credentials')) {
+            history.push('/trangchu')
+        }
+    }
+
+
+    const formikLogin = useFormik({
+        initialValues: {
+            taiKhoan: "",
+            matKhau: "",
+        },
+
+        onSubmit: _handleLogin,
+    })
+
     return (
-        <div>
-            Login
-        </div>
+        <>
+            <div className='loginBody'>
+                <div className={classContainer} id="container">
+                    <div className="form-container sign-up-container">
+                        <form action="#" onSubmit={formik.handleSubmit}>
+                            <h1>Đăng ký</h1>
+                            <div className="social-container">
+                                <a href="#" className="social"><i className="fab fa-facebook-f" /></a>
+                                <a href="#" className="social"><i className="fab fa-google-plus-g" /></a>
+                                <a href="#" className="social"><i className="fab fa-linkedin-in" /></a>
+                            </div>
+                            <input
+                                onBlur={formik.handleBlur}
+                                onChange={formik.handleChange}
+                                type="text" placeholder="Tài khoản"
+                                name='taiKhoan'
+                                value={formik.values.taiKhoan} />
+                            {formik.errors.taiKhoan && formik.touched.taiKhoan ? <div className='errorMessage'>{formik.errors.taiKhoan}</div> : <div className='message'></div>}
+
+                            <input
+                                onChange={formik.handleChange}
+                                type="text" placeholder="Họ tên"
+                                name='hoTen'
+                                value={formik.values.hoTen} />
+                            {formik.errors.hoTen && formik.touched.hoTen ? <div className='errorMessage'>{formik.errors.hoTen}</div> : <div className='message'></div>}
+
+                            <input
+                                onChange={formik.handleChange}
+                                type="password" placeholder="Mật khẩu"
+                                name='matKhau'
+                                value={formik.values.matKhau} />
+                            {formik.errors.matKhau && formik.touched.matKhau ? <div className='errorMessage' >{formik.errors.matKhau}</div> : <div className='message'></div>}
+
+                            <input
+                                onChange={formik.handleChange}
+                                type="email" placeholder="Email"
+                                name="email"
+                                value={formik.values.email} />
+                            {formik.errors.email && formik.touched.email ? <div className='errorMessage'>{formik.errors.email}</div> : <div className='message'></div>}
+
+                            <input
+                                onChange={formik.handleChange}
+                                type="phone" placeholder="Số điện thoại"
+                                name='soDT'
+                                value={formik.values.soDT} />
+                            {formik.errors.soDT && formik.touched.soDT ? <div className='errorMessage'>{formik.errors.soDT}</div> : <div className='message'></div>}
+
+                            <select id="" className=''
+                                onChange={formik.handleChange}
+                                name='maNhom'
+                                value={formik.values.maNhom}>
+                                <option value="GP01">GP01</option>
+                                <option value="GP02">GP02</option>
+                                <option value="GP03">GP03</option>
+                                <option value="GP04">GP04</option>
+                                <option value="GP05">GP05</option>
+                                <option value="GP06">GP06</option>
+                                <option value="GP07">GP07</option>
+                                <option value="GP08">GP08</option>
+                                <option value="GP09">GP09</option>
+                                <option value="GP010">GP010</option>
+                            </select>
+                            <button type='submit'>Đăng ký</button>
+                        </form>
+                    </div>
+                    <div className="form-container sign-in-container">
+                        <form action="#" onSubmit={formikLogin.handleSubmit}>
+                            <h1>Đăng nhập</h1>
+                            <div className="social-container">
+                                <a href="#" className="social"><i className="fab fa-facebook-f" /></a>
+                                <a href="#" className="social"><i className="fab fa-google-plus-g" /></a>
+                                <a href="#" className="social"><i className="fab fa-linkedin-in" /></a>
+                            </div>
+                            <span>hoặc sử dụng tài khoản đã đăng ký của bạn</span>
+                            <input
+                                onChange={formikLogin.handleChange}
+                                type="text" placeholder="Tài khoản"
+                                name='taiKhoan'
+                                value={formikLogin.values.taiKhoan} />
+
+                            <input
+                                onChange={formikLogin.handleChange}
+                                type="password" placeholder="Mật khẩu"
+                                name='matKhau'
+                                value={formikLogin.values.matKhau} />
+                            <a href="#">Quên mật khẩu?</a>
+                            <button type="submit">Đăng nhập</button>
+                        </form>
+                    </div>
+                    <div className="overlay-container">
+                        <div className="overlay">
+                            <div className="overlay-panel overlay-left">
+                                <h1>Chào mừng bạn đã trở lại!</h1>
+                                <p>Vui lòng đăng nhập để kết nối với tài khoản của bạn</p>
+                                <button onClick={delID} className="ghost" id="signIn">Đăng nhập</button>
+                            </div>
+                            <div className="overlay-panel overlay-right">
+                                <h1>Xin chào!</h1>
+                                <p>Vui lòng nhấn đăng ký để thiết lập thông tin tài khoản của bạn!</p>
+                                <button onClick={addID} className="ghost" id="signUp">Đăng ký</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </>
     )
+
 }
+

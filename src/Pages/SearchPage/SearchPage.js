@@ -1,10 +1,66 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { NavLink } from 'react-router-dom';
 import { Rate } from 'antd';
+import PaginationPages from '../../Components/Pagination/PaginationPages';
 import 'antd/dist/antd.css';
 import './SearchPage.css'
-import PaginationPages from '../../Components/Pagination/PaginationPages';
+import { courseSearchList } from '../../Redux/action/loadCourse';
 
-export default function SearchPage() {
+export default function SearchPage(props) {
+    // console.log(props.match.params.tuKhoa)
+    const getCourseSearchList = useSelector(state => state.CourseReducer.coursesSearchList)
+
+    // console.log(getCourseSearchList);
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(courseSearchList(props.match.params.tuKhoa))
+    }, [props.match.params.tuKhoa])
+
+    const renderSearchPage = () => {
+        return getCourseSearchList.map((course, index) => {
+            return (
+                <div key={index} className='searchModel cardSearchBox'>
+                    <div className='row'>
+                        <div className='col-3'>
+                            <img className='imgSearch' src="https://picsum.photos/200/300" alt="..." />
+                        </div>
+                        <div className='col-8 searchContent'>
+                            <btn className='btnCard'>{course.danhMucKhoaHoc.tenDanhMucKhoaHoc}</btn>
+                            <h4 className="textCard textCardSearch">{course.tenKhoaHoc}</h4>
+                            <p className='textCardSearch'>{course.moTa}</p>
+                            <div className='textCardSearch'>
+                                <span className='textCardTitle'><i class="far fa-clock iconOclock"></i> 8 giờ 21 phút</span>
+                                <span className='textCardTitle'><i class="far fa-calendar iconCalendar"></i> 23 giờ</span>
+                                <span className='textCardTitle'><i class="fas fa-signal iconLevel "></i> All level</span>
+                            </div>
+
+                            <div className='d-flex'>
+                                <span><Rate disabled allowHalf defaultValue={4.5} /></span>
+
+                            </div>
+
+                            <div className=''>
+                                <div>
+                                    <img src={course.hinhAnh} className='imgCardFooter' alt="" />
+                                    <span className='textCardTitle ml-2'>{course.nguoiTao.hoTen}</span>
+                                </div>
+                            </div>
+                            <NavLink to={`/chitiet/${course.maKhoaHoc}`} className='custom-btn btnGlobal btnSearch'>Xem chi tiết</NavLink>
+                        </div>
+                        <div className='col-1'>
+                            <div className=''>
+                                <span className='textCardTitle' style={{ color: 'rgb(234 76 137)' }} >$119.55</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        })
+    }
+
     return (
         <div class='searchPage'>
             <div className='row'>
@@ -188,158 +244,11 @@ export default function SearchPage() {
                     </div>
                 </div>
                 <div className="col-10">
-                    <h6 className=''>Hiển thị 169 kết quả</h6>
+                    <h6 className=''>Hiển thị {getCourseSearchList.length} kết quả</h6>
                     <div className='mt-3'>
-                        <div className='searchModel cardSearchBox'>
-                            <div className='row'>
-                                <div className='col-3'>
-                                    <img className='imgSearch' src="https://picsum.photos/200/300" alt="..." />
-                                </div>
-                                <div className='col-8'>
-                                    <btn className='btnCard'>Lập trình</btn>
-                                    <h4 className="textCard textCardSearch">Lập trình frontend với html css javascripts</h4>
-                                    <p className='textCardSearch'>Khóa học chi tiết nhất về html, nhiều project thực hành giúp thành thạo html css và javascripts. Được cấp chứng chỉ và hỗ trợ phỏng vấn việc làm
-                                    </p>
-
-                                    <div className='textCardSearch'>
-                                        <span className='textCardTitle'><i class="far fa-clock iconOclock"></i> 8 giờ 21 phút</span>
-                                        <span className='textCardTitle'><i class="far fa-calendar iconCalendar"></i> 23 giờ</span>
-                                        <span className='textCardTitle'><i class="fas fa-signal iconLevel "></i> All level</span>
-                                    </div>
-
-                                    <div className='d-flex'>
-                                        <span><Rate disabled allowHalf defaultValue={4.5} /></span>
-
-                                    </div>
-
-                                    <div className=''>
-                                        <div>
-                                            <img src={require("../../Assets/Img/imgCard/personcard.jpg").default} className='imgCardFooter' alt="" />
-                                            <span className='textCardTitle'> ElunMask</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='col-1'>
-                                    <div className=''>
-                                        <span className='textCardTitle' style={{ color: 'rgb(234 76 137)' }} >$119.55</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='searchModel cardSearchBox'>
-                            <div className='row'>
-                                <div className='col-3'>
-                                    <img className='imgSearch' src="https://picsum.photos/200/300" alt="..." />
-                                </div>
-                                <div className='col-8'>
-                                    <btn className='btnCard'>Lập trình</btn>
-                                    <h4 className="textCard textCardSearch">Lập trình frontend với html css javascripts</h4>
-                                    <p className='textCardSearch'>Khóa học chi tiết nhất về html, nhiều project thực hành giúp thành thạo html css và javascripts. Được cấp chứng chỉ và hỗ trợ phỏng vấn việc làm
-                                    </p>
-
-                                    <div className='textCardSearch'>
-                                        <span className='textCardTitle'><i class="far fa-clock iconOclock"></i> 8 giờ 21 phút</span>
-                                        <span className='textCardTitle'><i class="far fa-calendar iconCalendar"></i> 23 giờ</span>
-                                        <span className='textCardTitle'><i class="fas fa-signal iconLevel "></i> All level</span>
-                                    </div>
-
-                                    <div className='d-flex'>
-                                        <span><Rate disabled allowHalf defaultValue={4.5} /></span>
-
-                                    </div>
-
-                                    <div className=''>
-                                        <div>
-                                            <img src={require("../../Assets/Img/imgCard/personcard.jpg").default} className='imgCardFooter' alt="" />
-                                            <span className='textCardTitle'> ElunMask</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='col-1'>
-                                    <div className=''>
-                                        <span className='textCardTitle' style={{ color: 'rgb(234 76 137)' }} >$119.55</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='searchModel cardSearchBox'>
-                            <div className='row'>
-                                <div className='col-3'>
-                                    <img className='imgSearch' src="https://picsum.photos/200/300" alt="..." />
-                                </div>
-                                <div className='col-8'>
-                                    <btn className='btnCard'>Lập trình</btn>
-                                    <h4 className="textCard textCardSearch">Lập trình frontend với html css javascripts</h4>
-                                    <p className='textCardSearch'>Khóa học chi tiết nhất về html, nhiều project thực hành giúp thành thạo html css và javascripts. Được cấp chứng chỉ và hỗ trợ phỏng vấn việc làm
-                                    </p>
-
-                                    <div className='textCardSearch'>
-                                        <span className='textCardTitle'><i class="far fa-clock iconOclock"></i> 8 giờ 21 phút</span>
-                                        <span className='textCardTitle'><i class="far fa-calendar iconCalendar"></i> 23 giờ</span>
-                                        <span className='textCardTitle'><i class="fas fa-signal iconLevel "></i> All level</span>
-                                    </div>
-
-                                    <div className='d-flex'>
-                                        <span><Rate disabled allowHalf defaultValue={4.5} /></span>
-
-                                    </div>
-
-                                    <div className=''>
-                                        <div>
-                                            <img src={require("../../Assets/Img/imgCard/personcard.jpg").default} className='imgCardFooter' alt="" />
-                                            <span className='textCardTitle'> ElunMask</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='col-1'>
-                                    <div className=''>
-                                        <span className='textCardTitle' style={{ color: 'rgb(234 76 137)' }} >$119.55</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='searchModel cardSearchBox'>
-                            <div className='row'>
-                                <div className='col-3'>
-                                    <img className='imgSearch' src="https://picsum.photos/200/300" alt="..." />
-                                </div>
-                                <div className='col-8'>
-                                    <btn className='btnCard'>Lập trình</btn>
-                                    <h4 className="textCard textCardSearch">Lập trình frontend với html css javascripts</h4>
-                                    <p className='textCardSearch'>Khóa học chi tiết nhất về html, nhiều project thực hành giúp thành thạo html css và javascripts. Được cấp chứng chỉ và hỗ trợ phỏng vấn việc làm
-                                    </p>
-
-                                    <div className='textCardSearch'>
-                                        <span className='textCardTitle'><i class="far fa-clock iconOclock"></i> 8 giờ 21 phút</span>
-                                        <span className='textCardTitle'><i class="far fa-calendar iconCalendar"></i> 23 giờ</span>
-                                        <span className='textCardTitle'><i class="fas fa-signal iconLevel "></i> All level</span>
-                                    </div>
-
-                                    <div className='d-flex'>
-                                        <span><Rate disabled allowHalf defaultValue={4.5} /></span>
-
-                                    </div>
-
-                                    <div className=''>
-                                        <div>
-                                            <img src={require("../../Assets/Img/imgCard/personcard.jpg").default} className='imgCardFooter' alt="" />
-                                            <span className='textCardTitle'> ElunMask</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='col-1'>
-                                    <div className=''>
-                                        <span className='textCardTitle' style={{ color: 'rgb(234 76 137)' }} >$119.55</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {renderSearchPage()}
                         <div className='mt-3'>
                             <PaginationPages />
-                            
                         </div>
                     </div>
                 </div>

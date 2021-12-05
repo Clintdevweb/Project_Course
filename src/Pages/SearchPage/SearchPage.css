@@ -109,3 +109,16 @@
     background-color: #01877E;
     border-color: #dee2e6;
 }
+
+
+
+/* Btn search */
+.btnSearch{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.searchContent{
+    position: relative;
+}

@@ -196,3 +196,27 @@
 .rightContent i{
     color: rgb(249,214,120);
 }
+
+/* Modal update */
+.modalUpdateBody{
+    padding: 20px 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalUpdateBody form {
+    width: 100%;
+}
+
+.modalUpdateBody input {
+    border-radius: 5px;
+    padding: 5px 15px;
+    width: 100%;
+}
+
+.modalUpdateBody .modal-footer{
+    border-top: none;
+}
+

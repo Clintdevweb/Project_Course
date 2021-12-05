@@ -9,6 +9,29 @@
     padding: 5px 20px;
 }
 
+.courseCate{
+    position: absolute;
+    top: 32px;
+    left: 0;
+    z-index: 10;
+    min-width: 160px;
+    max-height: 0;
+    overflow: hidden;
+    background-color: rgb(1, 135, 126, 0.5);
+    transition: all 0.5s linear;
+}
+
+.courseCate li{
+    padding: 10px 10px;
+}
+
+.btnGlobal:hover .courseCate{
+    max-height: 400px;
+}
+
+.courseCate li:hover a {
+    color:#ffffff
+}
 .searchInput {
     display: flex;
     align-items: center;
@@ -58,6 +81,12 @@
     right: 5px;
     top: 15px;
     position: absolute;
+    
 }
 
-
+/* avatar */
+.avatar{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}

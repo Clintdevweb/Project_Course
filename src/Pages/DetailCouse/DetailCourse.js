@@ -1,7 +1,46 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux' 
 import './DetailCourse.css'
 import { Rate } from 'antd'
-export default function DetailCourse() {
+import { getCourseDetail } from '../../Redux/action/loadCourse'
+import { http } from '../../Util/setting'
+export default function DetailCourse(props) {
+    const dispatch = useDispatch() 
+    
+    const detailCourse = useSelector(state => state.CourseReducer.courseDetail)
+    
+    console.log(detailCourse);
+    
+    const registerCourse = async () => {
+        const credentailLocal = localStorage.getItem('credentials')
+
+        if(credentailLocal){
+            const credentailvalues = JSON.parse
+            (credentailLocal)
+
+            const valuesRegisCoure = {
+                taiKhoan: credentailvalues.taiKhoan,
+                maKhoaHoc: detailCourse.maKhoaHoc
+            }
+    
+            const headers = {
+                "Authorization": `Bearer ${credentailvalues.accessToken}`
+            }
+
+            try {
+                let result = await http.post('/api/QuanLyKhoaHoc/DangKyKhoaHoc', valuesRegisCoure, { headers })  
+                console.log(result);
+            } catch (errors) {
+                console.log(errors.response.data);
+            }
+        }
+    }
+
+    useEffect(() => {
+        dispatch(getCourseDetail(props.match.params.maKhoaHoc))        
+    }, [props.match.params.maKhoaHoc])
+
+    // console.log(detailCourse.hinhAnh);
     return (
         <div className='detailPage'>
             <div>
@@ -11,27 +50,26 @@ export default function DetailCourse() {
                             <img className='imgSearch' src="https://picsum.photos/200/300" alt="..." />
                         </div>
                         <div className='col-6'>
-                            <h4 className="titleDetailCard">Master Fontend</h4>
+                            <h4 className="titleDetailCard">{detailCourse.tenKhoaHoc}</h4>
                             <p className='subTextDetail subDetailStyle mt-2'>by E-learning</p>
-                            <p className='textDetailTitle'>Khóa học chi tiết nhất về html, nhiều project thực hành giúp thành thạo html css và javascripts. Được cấp chứng chỉ và hỗ trợ phỏng vấn việc làm. Học thực hành liên tục giúp vững kiến thức khi đi làm
-                            </p>
+                            <p className='textDetailTitle'>{detailCourse.danhMucKhoaHoc.tenDanhMucKhoaHoc}</p>
 
                             <div className='d-flex '>
                                 <span><Rate disabled allowHalf defaultValue={4.5} /></span>
-                                <span className='subTextDetail ml-4'>(20 đánh giá)</span>
+                                <span className='subTextDetail ml-4'>({detailCourse.luotXem} đánh giá)</span>
                             </div>
                         </div>
                         <div className='col-3'>
                             <div className='detailRightPages'>
-                                <p className='textCardTitle'>25 / 10 / 2020</p>
+                                <p className='textCardTitle'>{detailCourse.ngayTao}</p>
                                 <div className='mt-3'>
                                     <div>
-                                        <img src={require("../../Assets/Img/imgCard/personcard.jpg").default} className='imgCardFooter' alt="" />
-                                        <span className='textCardTitle'> ElunMask</span>
+                                        <img src={detailCourse.hinhAnh} className='imgCardFooter' alt="" />
+                                        <span className='textCardTitle ml-2'>{detailCourse.nguoiTao.hoTen}</span>
                                     </div>
                                 </div>
                                 <div className='mt-3'>
-                                    <button className='custom-btn btnGlobal btnDetail '>Đăng ký</button>
+                                    <button className='custom-btn btnGlobal btnDetail' onClick={registerCourse}>Đăng ký</button>
                                 </div>
                             </div>
                         </div>
@@ -42,7 +80,7 @@ export default function DetailCourse() {
                                 <div className='detailContentPages'>
                                     <div className='detailContent'>
                                         <h4 className='titleDetailCard'>Thông tin về khóa học</h4>
-                                        <p className='textContentDetail'>Đây là lộ trình gồm 10 khóa combo Lập trình Front End Foundation. Combo này sẽ giúp các bạn luyện những vấn đề nền tảng cốt lõi và chuyên sâu nhất trong lộ trình nghề Front End. Khóa học gồm hơn 30 bài tập và dự án vô cùng thực tế xoay quanh từ HTML, CSS, HTML5, CSS3 đến nền tảng chuyên sâu SASS/SCSS, Bootstrap, FlexGird, Animation, Javascript, Javascript Prototype, Javascript ES6, Jquery,...Các kiến thức này cực kì cần thiết cho các bạn đi theo nghề Front End và đi nghiên cứu sâu hơn lên các framework của khóa Front End Master sau này.</p>
+                                        <p className='textContentDetail'>Đây là lộ trình gồm 10 khóa combo Lập trình Front End Foundation. Combo này sẽ giúp các bạn luyện những vấn đề nền tảng cốt lõi và chuyên sâu nhất trong lộ trình nghề Front End. Khóa học gồm hơn 30 bài tập và dự án vô cùng thực tế xoay quanh từ HTML, CSS, HTML5, CSS3 đến nền tảng chuyên sâu SASS/SCSS, Bootstrap, FlexGird, Animation, Javascript, Javascript Prototype, Javascript ES6, Jquery,.... {detailCourse.moTa}</p>
                                     </div>
 
                                     <div className='detailContent'>
@@ -76,7 +114,7 @@ export default function DetailCourse() {
                                         <div>
                                             <div className='iconDetail'>
                                                 <i class="fas fa-user-graduate iconStudentDetail"></i>
-                                                <span className='subTextDetail'>146 Học viên</span>
+                                                <span className='subTextDetail'>{detailCourse.soLuongHocVien} Học viên</span>
                                             </div>
                                             <div className='iconDetail'>
                                                 <i class="far fa-money-bill-alt iconMoneyDetail"></i>
