@@ -25,8 +25,6 @@ export default function CourseCategory(props) {
 
     // console.log(NameCategory); 
     useEffect(() => {
-
-        //   console.log(maDanhMuc)
         dispatch(courseCategoryList(maDanhMuc))
     }, [maDanhMuc])
 

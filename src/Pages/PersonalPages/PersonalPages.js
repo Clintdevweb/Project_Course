@@ -7,32 +7,35 @@ import * as Yup from 'yup'
 import PaginationPages from '../../Components/Pagination/PaginationPages';
 import './PersonalPages.css'
 import { http } from '../../Util/setting';
-import { _userUpdate } from '../../Redux/action/UserAction';
+import { loadMyCourse, _userUpdate } from '../../Redux/action/UserAction';
 
 const { TabPane } = Tabs;
-export default function PersonalPages (props) {
-
+export default function PersonalPages(props) {
     const dispatch = useDispatch()
 
-    const studentInfo = useSelector(state => state.UserReducer.credentials)
-    // console.log(studentInfo);
+    const {credentials, myCourseDetail} = useSelector(state => state.UserReducer)
+    console.log('myCourseDetail', myCourseDetail)
+    console.log('credentials', credentials)
+    
 
     const _handleUpdate = (values, formik) => {
-
-        // console.log(values.soDT)
         const action = _userUpdate(values, formik)
         dispatch(action)
     }
 
-    // Formik form
+    const RenderUserCourses = () => {
+        return;
+    }
+
+    // Formik form 
     const formik = useFormik({
         initialValues: {
-            taiKhoan: studentInfo.taiKhoan,
+            taiKhoan: credentials.taiKhoan,
             matKhau: "",
             hoTen: "",
             email: "",
             soDT: "",
-            maLoaiNguoiDung: studentInfo.maLoaiNguoiDung,
+            maLoaiNguoiDung: credentials.maLoaiNguoiDung,
             maNhom: "GP01",
         },
         validationSchema: Yup.object().shape({
@@ -58,9 +61,16 @@ export default function PersonalPages (props) {
         onSubmit: _handleUpdate
     })
 
+    // useEffect(async () => {
+    //     const action = await loadMyCourse(credentials.chiTietKhoaHocGhiDanh)
+    //     dispatch (action)
+    // }, [])
+    
     useEffect(() => {
-        
-    }, [])
+        const action = loadMyCourse(credentials.chiTietKhoaHocGhiDanh)
+        dispatch (action)
+        console.log('staertr123');
+    }, []) 
 
     return (
         <div>
@@ -70,12 +80,12 @@ export default function PersonalPages (props) {
                         <div className='row'>
                             <div className='col-9'>
                                 <div className='smallCardLeft'>
-                                    <img src={studentInfo.img} alt="" />
+                                    <img src={credentials.img} alt="" />
                                     <div>
                                         <div className='ml-3'>
                                             <div className='smallTitle'>
-                                                <p className='smallCardTitle'>{studentInfo.taiKhoan}</p>
-                                                <p className='subTextDetail'>{studentInfo.hoTen}</p>
+                                                <p className='smallCardTitle'>{credentials.taiKhoan}</p>
+                                                <p className='subTextDetail'>{credentials.hoTen}</p>
                                                 <p className='subTextDetail'>24 / 11 / 2021</p>
                                             </div>
                                         </div>
@@ -90,23 +100,23 @@ export default function PersonalPages (props) {
 
                 </div>
                 <div className='personalContent'>
-                    <Tabs defaultActiveKey="1">
+                    <Tabs defaultActiveKey="1" >
                         <TabPane tab="Thông tin cá nhân" key="1">
                             <div className=''>
                                 <div className='infoContentTop'>
                                     <div className='row left'>
                                         <div className='col-6'>
                                             <div>
-                                                <p>Email:<span className='ml-2'>{studentInfo.email}</span></p>
-                                                <p>Họ và tên: <span className='ml-2'>{studentInfo.hoTen}</span></p>
-                                                <p>Số điện thoại: <span className='ml-2'>{studentInfo.soDt ? studentInfo.soDt : studentInfo.soDT}</span></p>
+                                                <p>Email:<span className='ml-2'>{credentials.email}</span></p>
+                                                <p>Họ và tên: <span className='ml-2'>{credentials.hoTen}</span></p>
+                                                <p>Số điện thoại: <span className='ml-2'>{credentials.soDt ? credentials.soDt : credentials.soDT}</span></p>
 
                                             </div>
                                         </div>
                                         <div className='col-6'>
-                                            <p>Tài khoản: <span className='ml-2'>{studentInfo.taiKhoan}</span></p>
-                                            <p>Nhóm: <span className='ml-2'>{studentInfo.maNhom}</span></p>
-                                            <p>Đối tượng: <span className='ml-2'>{studentInfo.maLoaiNguoiDung === "HV" ? " Học viên" : " Giáo viên"}</span></p>
+                                            <p>Tài khoản: <span className='ml-2'>{credentials.taiKhoan}</span></p>
+                                            <p>Nhóm: <span className='ml-2'>{credentials.maNhom}</span></p>
+                                            <p>Đối tượng: <span className='ml-2'>{credentials.maLoaiNguoiDung === "HV" ? " Học viên" : " Giáo viên"}</span></p>
                                         </div>
                                         <div>
                                             <button data-toggle="modal" data-target="#myModal" className='custom-btn btnGlobal btnInfo'>Cập nhật</button>
@@ -218,154 +228,48 @@ export default function PersonalPages (props) {
                                 <h4 className='findTitle'>Khóa học của tôi</h4>
                                 <input className='searchForm GlobalForm' type="text" placeholder='Tìm kiếm ...' />
                             </div>
+                            
+                            {RenderUserCourses()}
+                            {myCourseDetail.map((course, index) => {
+            return (
+                <div key={index} className='searchModel cardSearchBox'>
+                    <div className='row'>
+                        <div className='col-3'>
+                            <img className='imgSearch' src={course.hinhAnh} alt="..." />
+                        </div>
+                        <div className='col-7'>
+                            <btn className='btnCard'>{course.danhMucKhoaHoc.tenDanhMucKhoaHoc}</btn>
+                            <h4 className="textCard textCardSearch">{course.tenKhoaHoc}</h4>
+                            <p className='textCardSearch'>{course.moTa}</p>
 
-                            <div className='searchModel cardSearchBox'>
-                                <div className='row'>
-                                    <div className='col-3'>
-                                        <img className='imgSearch' src="https://picsum.photos/200/300" alt="..." />
-                                    </div>
-                                    <div className='col-7'>
-                                        <btn className='btnCard'>Lập trình</btn>
-                                        <h4 className="textCard textCardSearch">Lập trình frontend với html css javascripts</h4>
-                                        <p className='textCardSearch'>Khóa học chi tiết nhất về html, nhiều project thực hành giúp thành thạo html css và javascripts. Được cấp chứng chỉ và hỗ trợ phỏng vấn việc làm
-                                        </p>
-
-                                        <div className='textCardSearch'>
-                                            <span className='textCardTitle'><i class="far fa-clock iconOclock"></i> 8 giờ 21 phút</span>
-                                            <span className='textCardTitle'><i class="far fa-calendar iconCalendar"></i> 23 giờ</span>
-                                            <span className='textCardTitle'><i class="fas fa-signal iconLevel "></i> All level</span>
-                                        </div>
-
-                                        <div className='d-flex'>
-                                            <span><Rate disabled allowHalf defaultValue={4.5} /></span>
-
-                                        </div>
-
-                                        <div className=''>
-                                            <div>
-                                                <img src={require("../../Assets/Img/imgCard/personcard.jpg").default} className='imgCardFooter' alt="" />
-                                                <span className='textCardTitle'> ElunMask</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className='col-2 cancelBody'>
-                                        <div className=''>
-                                            <btn className='btnGlobal custom-btn'>Hủy khóa học</btn>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div className='textCardSearch'>
+                                <span className='textCardTitle'><i class="far fa-clock iconOclock"></i> 8 giờ 21 phút</span>
+                                <span className='textCardTitle'><i class="far fa-calendar iconCalendar"></i> 23 giờ</span>
+                                <span className='textCardTitle'><i class="fas fa-signal iconLevel "></i> All level</span>
                             </div>
 
-                            <div className='searchModel cardSearchBox'>
-                                <div className='row'>
-                                    <div className='col-3'>
-                                        <img className='imgSearch' src="https://picsum.photos/200/300" alt="..." />
-                                    </div>
-                                    <div className='col-7'>
-                                        <btn className='btnCard'>Lập trình</btn>
-                                        <h4 className="textCard textCardSearch">Lập trình frontend với html css javascripts</h4>
-                                        <p className='textCardSearch'>Khóa học chi tiết nhất về html, nhiều project thực hành giúp thành thạo html css và javascripts. Được cấp chứng chỉ và hỗ trợ phỏng vấn việc làm
-                                        </p>
+                            <div className='d-flex'>
+                                <span><Rate disabled allowHalf defaultValue={4.5} /></span>
 
-                                        <div className='textCardSearch'>
-                                            <span className='textCardTitle'><i class="far fa-clock iconOclock"></i> 8 giờ 21 phút</span>
-                                            <span className='textCardTitle'><i class="far fa-calendar iconCalendar"></i> 23 giờ</span>
-                                            <span className='textCardTitle'><i class="fas fa-signal iconLevel "></i> All level</span>
-                                        </div>
-
-                                        <div className='d-flex'>
-                                            <span><Rate disabled allowHalf defaultValue={4.5} /></span>
-
-                                        </div>
-
-                                        <div className=''>
-                                            <div>
-                                                <img src={require("../../Assets/Img/imgCard/personcard.jpg").default} className='imgCardFooter' alt="" />
-                                                <span className='textCardTitle'> ElunMask</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className='col-2 cancelBody'>
-                                        <div className=''>
-                                            <btn className='btnGlobal custom-btn'>Hủy khóa học</btn>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
-                            <div className='searchModel cardSearchBox'>
-                                <div className='row'>
-                                    <div className='col-3'>
-                                        <img className='imgSearch' src="https://picsum.photos/200/300" alt="..." />
-                                    </div>
-                                    <div className='col-7'>
-                                        <btn className='btnCard'>Lập trình</btn>
-                                        <h4 className="textCard textCardSearch">Lập trình frontend với html css javascripts</h4>
-                                        <p className='textCardSearch'>Khóa học chi tiết nhất về html, nhiều project thực hành giúp thành thạo html css và javascripts. Được cấp chứng chỉ và hỗ trợ phỏng vấn việc làm
-                                        </p>
-
-                                        <div className='textCardSearch'>
-                                            <span className='textCardTitle'><i class="far fa-clock iconOclock"></i> 8 giờ 21 phút</span>
-                                            <span className='textCardTitle'><i class="far fa-calendar iconCalendar"></i> 23 giờ</span>
-                                            <span className='textCardTitle'><i class="fas fa-signal iconLevel "></i> All level</span>
-                                        </div>
-
-                                        <div className='d-flex'>
-                                            <span><Rate disabled allowHalf defaultValue={4.5} /></span>
-
-                                        </div>
-
-                                        <div className=''>
-                                            <div>
-                                                <img src={require("../../Assets/Img/imgCard/personcard.jpg").default} className='imgCardFooter' alt="" />
-                                                <span className='textCardTitle'> ElunMask</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className='col-2 cancelBody'>
-                                        <div className=''>
-                                            <btn className='btnGlobal custom-btn'>Hủy khóa học</btn>
-                                        </div>
-                                    </div>
+                            <div className=''>
+                                <div>
+                                    <img src={require("../../Assets/Img/imgCard/personcard.jpg").default} className='imgCardFooter' alt="" />
+                                    <span className='textCardTitle'> {course.nguoiTao.hoTen}</span>
                                 </div>
                             </div>
-
-                            <div className='searchModel cardSearchBox'>
-                                <div className='row'>
-                                    <div className='col-3'>
-                                        <img className='imgSearch' src="https://picsum.photos/200/300" alt="..." />
-                                    </div>
-                                    <div className='col-7'>
-                                        <btn className='btnCard'>Lập trình</btn>
-                                        <h4 className="textCard textCardSearch">Lập trình frontend với html css javascripts</h4>
-                                        <p className='textCardSearch'>Khóa học chi tiết nhất về html, nhiều project thực hành giúp thành thạo html css và javascripts. Được cấp chứng chỉ và hỗ trợ phỏng vấn việc làm
-                                        </p>
-
-                                        <div className='textCardSearch'>
-                                            <span className='textCardTitle'><i class="far fa-clock iconOclock"></i> 8 giờ 21 phút</span>
-                                            <span className='textCardTitle'><i class="far fa-calendar iconCalendar"></i> 23 giờ</span>
-                                            <span className='textCardTitle'><i class="fas fa-signal iconLevel "></i> All level</span>
-                                        </div>
-
-                                        <div className='d-flex'>
-                                            <span><Rate disabled allowHalf defaultValue={4.5} /></span>
-
-                                        </div>
-
-                                        <div className=''>
-                                            <div>
-                                                <img src={require("../../Assets/Img/imgCard/personcard.jpg").default} className='imgCardFooter' alt="" />
-                                                <span className='textCardTitle'> ElunMask</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className='col-2 cancelBody'>
-                                        <div className=''>
-                                            <btn className='btnGlobal custom-btn'>Hủy khóa học</btn>
-                                        </div>
-                                    </div>
-                                </div>
+                        </div>
+                        <div className='col-2 cancelBody'>
+                            <div className=''>
+                                <btn className='btnGlobal custom-btn'>Hủy khóa học</btn>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        })}
+                                                  
                             <div className='mt-3'>
                                 <PaginationPages />
                             </div>

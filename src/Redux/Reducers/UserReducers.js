@@ -1,14 +1,16 @@
-import { GET_USER_INFO, LOG_IN, UP_DATE } from "../types/userTypes"
+import { GET_MY_COURSE, GET_USER_INFO, LOG_IN, UP_DATE } from "../types/userTypes"
 
 const stateDefault = {
     credentials:{},
+    myCourseDetail: [],
     
 }
 
 const UserReducer = (state = stateDefault, action) => {
+    // console.log(state.myCourseDetail)
     switch (action.type) {
         case LOG_IN :{
-            state.credentials = action.data
+            state.credentials = {...state.credentials, ...action.data}
             
             return {...state}
         }
@@ -17,6 +19,13 @@ const UserReducer = (state = stateDefault, action) => {
             state.credentials = {...state.credentials, ...action.data}
             
             return {...state}
+        }
+
+        case GET_MY_COURSE :{
+            return {
+                ...state,
+                myCourseDetail: action.data
+            }
         }
        
         default: return { ...state }

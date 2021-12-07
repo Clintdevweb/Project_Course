@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { NavLink, Link, useHistory } from 'react-router-dom'
 import { courseCategory } from '../../Redux/action/loadCourse'
-import { getUserInfo } from '../../Redux/action/UserAction'
+import { getUserInfo, loadMyCourse } from '../../Redux/action/UserAction'
 import './Header.css'
 
 
@@ -14,18 +14,9 @@ export default function Header(props) {
     const courseCate = useSelector(state => state.CourseReducer.coursesCategary)
 
     const loginInfo = useSelector(state => state.UserReducer.credentials)
-    // console.log(loginInfo);
-
-    // const [infoStudent, setInfoStudent] = useState(loginInfo.taiKhoan)
-    // console.log(infoStudent);  
-
+ 
     const dispatch = useDispatch()
-
-    useEffect(() => {
-        dispatch(courseCategory)
-
-    }, [])
-
+  
     const renderCourseCate = () => {
         return courseCate.map((courseCate, index) => {
             return (
@@ -66,7 +57,9 @@ export default function Header(props) {
         }
     }
 
-    
+    useEffect(() => {
+        dispatch(courseCategory)
+    }, [])
 
     return (
         <>

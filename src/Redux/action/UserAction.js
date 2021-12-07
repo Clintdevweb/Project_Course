@@ -2,7 +2,7 @@ import axios from "axios"
 import { useState } from "react"
 import { useHistory } from "react-router"
 import { http } from "../../Util/setting"
-import { LOG_IN, UP_DATE } from "../types/userTypes"
+import { GET_MY_COURSE, GET_USER_INFO, LOG_IN, UP_DATE } from "../types/userTypes"
 
 export const userLogin = (values, formikLogin) => {
     return async (dispatch) => {
@@ -58,7 +58,7 @@ export const _getCredentailFromLocal = async (dispatch) => {
                 type: LOG_IN,
                 data: {
                     ...result.data,
-                    img: 'https://static.vecteezy.com/system/resources/thumbnails/002/002/403/small_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg', accessToken: credentailvalues.accessToken
+                    img: 'https://static.vecteezy.com/system/resources/thumbnails/002/002/403/small_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg'
                 }
 
             }
@@ -103,3 +103,58 @@ export const _userUpdate = (values, formik) => {
     }
 
 }
+
+export const loadMyCourse = (maKhoaHocArray) => {
+    return async (dispatch) => {
+        try {
+            console.log('maKhoaHocArray', maKhoaHocArray);
+            let arrayMyCourses = []
+             await maKhoaHocArray.forEach(async (course, index) => {
+                let result = await http.get(`/api/QuanLyKhoaHoc/LayThongTinKhoaHoc?maKhoaHoc=${course.maKhoaHoc}`)
+                arrayMyCourses.push(result.data)
+                
+            })
+
+            // console.log(result)
+            console.log(arrayMyCourses.length)
+
+            const action = {
+                type: GET_MY_COURSE,
+                data: arrayMyCourses
+            }
+            dispatch(action)
+
+
+        } catch (error) {
+            alert(error.data)
+        }
+
+    }
+}
+
+// export const loadMyCourse = (maKhoaHocArray) => {
+//     // console.log(maKhoaHocArray);
+//     return (dispatch) => {
+//         let arrayMyCourses = []
+//         maKhoaHocArray.forEach((course, index) => {
+//             let Promise = http.get(`/api/QuanLyKhoaHoc/LayThongTinKhoaHoc?maKhoaHoc=${course.maKhoaHoc}`)
+
+//             Promise.then(result => {
+//                 arrayMyCourses.push(result.data)
+//             })
+//             Promise.catch(errors => {
+//                 console.log(errors)
+//             })
+//         })
+//         console.log(arrayMyCourses)
+
+//         console.log(arrayMyCourses.length)
+
+//         const action = {
+//             type: GET_MY_COURSE,
+//             data: arrayMyCourses
+//         }
+//         dispatch(action)
+
+//     }
+// }

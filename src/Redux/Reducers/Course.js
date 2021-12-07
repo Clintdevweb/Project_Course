@@ -60,8 +60,6 @@ const CourseReducer = (state = stateDefault, action) => {
             return { ...state }
         }
 
-
-
         default: return { ...state }
     }
 }

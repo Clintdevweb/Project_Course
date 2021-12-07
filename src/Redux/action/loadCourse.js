@@ -67,10 +67,10 @@ export const courseSearchList = (tuKhoa) => {
     }
 }
 
-export const getCourseDetail = (maKHoaHoc) => {
+export const getCourseDetail = (maKhoaHoc) => {
     return async (dispatch) => {
         try {
-             let result = await http.get(`/api/QuanLyKhoaHoc/LayThongTinKhoaHoc?maKhoaHoc=${maKHoaHoc}`)
+             let result = await http.get(`/api/QuanLyKhoaHoc/LayThongTinKhoaHoc?maKhoaHoc=${maKhoaHoc}`)
 
              const action ={
                  type: GET_COURSE_DETAIL,
