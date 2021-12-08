@@ -5,22 +5,19 @@ import { Rate } from 'antd';
 import PaginationPages from '../../Components/Pagination/PaginationPages';
 import 'antd/dist/antd.css';
 import './SearchPage.css'
-import { courseSearchList } from '../../Redux/action/loadCourse';
+import { courseSearchList } from '../../Redux/action/CourseAction';
 
 export default function SearchPage(props) {
-    // console.log(props.match.params.tuKhoa)
-    const getCourseSearchList = useSelector(state => state.CourseReducer.coursesSearchList)
-
-    // console.log(getCourseSearchList);
-
     const dispatch = useDispatch()
+
+    const {coursesSearchList} = useSelector(state => state.CourseReducer)
 
     useEffect(() => {
         dispatch(courseSearchList(props.match.params.tuKhoa))
     }, [props.match.params.tuKhoa])
 
     const renderSearchPage = () => {
-        return getCourseSearchList.map((course, index) => {
+        return coursesSearchList.map((course, index) => {
             return (
                 <div key={index} className='searchModel cardSearchBox'>
                     <div className='row'>
@@ -244,7 +241,7 @@ export default function SearchPage(props) {
                     </div>
                 </div>
                 <div className="col-10">
-                    <h6 className=''>Hiển thị {getCourseSearchList.length} kết quả</h6>
+                    <h6 className=''>Hiển thị {coursesSearchList.length} kết quả</h6>
                     <div className='mt-3'>
                         {renderSearchPage()}
                         <div className='mt-3'>

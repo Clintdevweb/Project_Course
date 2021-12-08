@@ -1,35 +1,32 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { NavLink } from 'react-router-dom'
+import { courseCategoryList } from '../../Redux/action/CourseAction'
+
 import { Rate } from 'antd'
 import 'antd/dist/antd.css'
 import './courseCategory.css'
-import { courseCategoryList } from '../../Redux/action/loadCourse'
-import { NavLink } from 'react-router-dom'
-
 
 
 export default function CourseCategory(props) {
     const dispatch = useDispatch()
-    let maDanhMuc = props.match.params.maDanhMuc
+    let categoryCode = props.match.params.maDanhMuc
 
-    const getCourseCategory = useSelector(state => state.CourseReducer.coursesCategaryList
-    )
-    const getCategory = useSelector(state => state.CourseReducer.coursesCategary
-    )
+    const {coursesCategaryList, coursesCategary} = useSelector(state => state.CourseReducer)
 
-    let NameCategory = getCategory.find((item, index) => {
-        if (item.maDanhMuc === maDanhMuc) {
+    let NameCategory = coursesCategary.find((item, index) => {
+        if (item.maDanhMuc === categoryCode) {
             return item
         }
     })
 
     // console.log(NameCategory); 
     useEffect(() => {
-        dispatch(courseCategoryList(maDanhMuc))
-    }, [maDanhMuc])
+        dispatch(courseCategoryList(categoryCode))
+    }, [categoryCode])
 
     const renderCourseCategoryList = () => {
-        return getCourseCategory.map((course, index) => {
+        return coursesCategaryList.map((course, index) => {
             return (
                 <NavLink to={`/chitiet/${course.maKhoaHoc}`} key={index} className="col-4 cardListBody">
                     <div className="cardHome cardListCourse">

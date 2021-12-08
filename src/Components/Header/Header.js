@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { NavLink, Link, useHistory } from 'react-router-dom'
-import { courseCategory } from '../../Redux/action/loadCourse'
-import { getUserInfo, loadMyCourse } from '../../Redux/action/UserAction'
+import { courseCategory } from '../../Redux/action/CourseAction'
+
 import './Header.css'
 
 

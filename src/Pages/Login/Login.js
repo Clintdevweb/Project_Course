@@ -2,14 +2,10 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import './login.css'
-// import { SignUp } from '../../Redux/action/User'
 import { http } from '../../Util/setting'
-import axios from 'axios'
-import { userLogin } from '../../Redux/action/UserAction'
+import { userLogin, userSignup } from '../../Redux/action/UserAction'
 import { useHistory } from 'react-router'
-
-
+import './login.css'
 
 export default function Login() {
     const dispatch = useDispatch()
@@ -26,12 +22,11 @@ export default function Login() {
 
     // Handle SignUp
     const _handleSignup = async (values) => {
-        // console.log(values);
         try {
             let result = await http.post('/api/QuanLyNguoiDung/DangKy', values)
 
             if (result.request.status === 200) {
-                formik.resetForm()
+                formikSignup.resetForm()
                 alert('Đăng kí thành công')
             }
 
@@ -40,7 +35,7 @@ export default function Login() {
         }
     }
 
-    const formik = useFormik({
+    const formikSignup = useFormik({
         initialValues: {
             taiKhoan: "",
             matKhau: "",
@@ -84,7 +79,6 @@ export default function Login() {
         }
     }
 
-
     const formikLogin = useFormik({
         initialValues: {
             taiKhoan: "",
@@ -99,7 +93,7 @@ export default function Login() {
             <div className='loginBody'>
                 <div className={classContainer} id="container">
                     <div className="form-container sign-up-container">
-                        <form action="#" onSubmit={formik.handleSubmit}>
+                        <form action="#" onSubmit={formikSignup.handleSubmit}>
                             <h1>Đăng ký</h1>
                             <div className="social-container">
                                 <a href="#" className="social"><i className="fab fa-facebook-f" /></a>
@@ -107,45 +101,45 @@ export default function Login() {
                                 <a href="#" className="social"><i className="fab fa-linkedin-in" /></a>
                             </div>
                             <input
-                                onBlur={formik.handleBlur}
-                                onChange={formik.handleChange}
+                                onBlur={formikSignup.handleBlur}
+                                onChange={formikSignup.handleChange}
                                 type="text" placeholder="Tài khoản"
                                 name='taiKhoan'
-                                value={formik.values.taiKhoan} />
-                            {formik.errors.taiKhoan && formik.touched.taiKhoan ? <div className='errorMessage'>{formik.errors.taiKhoan}</div> : <div className='message'></div>}
+                                value={formikSignup.values.taiKhoan} />
+                            {formikSignup.errors.taiKhoan && formikSignup.touched.taiKhoan ? <div className='errorMessage'>{formikSignup.errors.taiKhoan}</div> : <div className='message'></div>}
 
                             <input
-                                onChange={formik.handleChange}
+                                onChange={formikSignup.handleChange}
                                 type="text" placeholder="Họ tên"
                                 name='hoTen'
-                                value={formik.values.hoTen} />
-                            {formik.errors.hoTen && formik.touched.hoTen ? <div className='errorMessage'>{formik.errors.hoTen}</div> : <div className='message'></div>}
+                                value={formikSignup.values.hoTen} />
+                            {formikSignup.errors.hoTen && formikSignup.touched.hoTen ? <div className='errorMessage'>{formikSignup.errors.hoTen}</div> : <div className='message'></div>}
 
                             <input
-                                onChange={formik.handleChange}
+                                onChange={formikSignup.handleChange}
                                 type="password" placeholder="Mật khẩu"
                                 name='matKhau'
-                                value={formik.values.matKhau} />
-                            {formik.errors.matKhau && formik.touched.matKhau ? <div className='errorMessage' >{formik.errors.matKhau}</div> : <div className='message'></div>}
+                                value={formikSignup.values.matKhau} />
+                            {formikSignup.errors.matKhau && formikSignup.touched.matKhau ? <div className='errorMessage' >{formikSignup.errors.matKhau}</div> : <div className='message'></div>}
 
                             <input
-                                onChange={formik.handleChange}
+                                onChange={formikSignup.handleChange}
                                 type="email" placeholder="Email"
                                 name="email"
-                                value={formik.values.email} />
-                            {formik.errors.email && formik.touched.email ? <div className='errorMessage'>{formik.errors.email}</div> : <div className='message'></div>}
+                                value={formikSignup.values.email} />
+                            {formikSignup.errors.email && formikSignup.touched.email ? <div className='errorMessage'>{formikSignup.errors.email}</div> : <div className='message'></div>}
 
                             <input
-                                onChange={formik.handleChange}
+                                onChange={formikSignup.handleChange}
                                 type="phone" placeholder="Số điện thoại"
                                 name='soDT'
-                                value={formik.values.soDT} />
-                            {formik.errors.soDT && formik.touched.soDT ? <div className='errorMessage'>{formik.errors.soDT}</div> : <div className='message'></div>}
+                                value={formikSignup.values.soDT} />
+                            {formikSignup.errors.soDT && formikSignup.touched.soDT ? <div className='errorMessage'>{formikSignup.errors.soDT}</div> : <div className='message'></div>}
 
                             <select id="" className=''
-                                onChange={formik.handleChange}
+                                onChange={formikSignup.handleChange}
                                 name='maNhom'
-                                value={formik.values.maNhom}>
+                                value={formikSignup.values.maNhom}>
                                 <option value="GP01">GP01</option>
                                 <option value="GP02">GP02</option>
                                 <option value="GP03">GP03</option>

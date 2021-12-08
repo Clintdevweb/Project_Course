@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import axios from 'axios'
+import { NavLink } from 'react-router-dom';
 import { Rate } from 'antd';
 import CountupNumber from '../../Components/CountUp/CountupNumber';
 import SliderPage from '../../Components/SliderPages/SliderPage';
-import { loadListCourse } from '../../Redux/action/loadCourse';
+import { getListCourse } from '../../Redux/action/CourseAction';
+
 import 'antd/dist/antd.css';
 import './Home.css'
-import { NavLink } from 'react-router-dom';
 
 export default function Home() {
-    const getCourse = useSelector(state => state.CourseReducer.coursesList)
+    const {coursesList} = useSelector(state => state.CourseReducer)
     
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(loadListCourse)
+        dispatch(getListCourse)
     }, [])
 
 const RenderListCourse = () => {
-    return getCourse.map((course, index) => {
+    return coursesList.map((course, index) => {
         if (index <= 7) {
             return (
                 <NavLink to={`/chitiet/${course.maKhoaHoc}`} key={index} className="col-3 mt-4">
@@ -88,7 +88,6 @@ return (
 
                 </div>
             </div>
-
             {/* New course */}
             <div className='homeTitle'>
                 <h6 className='subTextSlider  text-center'>Khóa học</h6>
@@ -97,14 +96,12 @@ return (
                     {RenderListCourse()}
                 </div>
             </div>
-
             {/* Slider */}
             <div className='SliderBody text-center'>
                 <h6 className='subTextSlider'>Đánh giá</h6>
                 <h3 className='textSlider'>Cảm nhận học viên</h3>
                 <SliderPage />
             </div>
-
             {/* Number run */}
             <div className='boxNumberBody'>
                 <div className='boxNumber' >

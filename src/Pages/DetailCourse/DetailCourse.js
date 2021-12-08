@@ -2,45 +2,17 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux' 
 import './DetailCourse.css'
 import { Rate } from 'antd'
-import { getCourseDetail } from '../../Redux/action/loadCourse'
-import { http } from '../../Util/setting'
+import { getCourseDetail, registerCourse } from '../../Redux/action/CourseAction'
+
 export default function DetailCourse(props) {
     const dispatch = useDispatch() 
-    
-    const detailCourse = useSelector(state => state.CourseReducer.courseDetail)
-    
-    console.log(detailCourse);
-    
-    const registerCourse = async () => {
-        const credentailLocal = localStorage.getItem('credentials')
-
-        if(credentailLocal){
-            const credentailvalues = JSON.parse
-            (credentailLocal)
-
-            const valuesRegisCoure = {
-                taiKhoan: credentailvalues.taiKhoan,
-                maKhoaHoc: detailCourse.maKhoaHoc
-            }
-    
-            const headers = {
-                "Authorization": `Bearer ${credentailvalues.accessToken}`
-            }
-
-            try {
-                let result = await http.post('/api/QuanLyKhoaHoc/DangKyKhoaHoc', valuesRegisCoure, { headers })  
-                console.log(result);
-            } catch (errors) {
-                console.log(errors.response.data);
-            }
-        }
-    }
-
+    const {courseDetail} = useSelector(state => state.CourseReducer)
+     
     useEffect(() => {
         dispatch(getCourseDetail(props.match.params.maKhoaHoc))        
     }, [props.match.params.maKhoaHoc])
 
-    // console.log(detailCourse.hinhAnh);
+    // console.log(courseDetail.hinhAnh);
     return (
         <div className='detailPage'>
             <div>
@@ -50,26 +22,28 @@ export default function DetailCourse(props) {
                             <img className='imgSearch' src="https://picsum.photos/200/300" alt="..." />
                         </div>
                         <div className='col-6'>
-                            <h4 className="titleDetailCard">{detailCourse.tenKhoaHoc}</h4>
+                            <h4 className="titleDetailCard">{courseDetail.tenKhoaHoc}</h4>
                             <p className='subTextDetail subDetailStyle mt-2'>by E-learning</p>
-                            <p className='textDetailTitle'>{detailCourse.danhMucKhoaHoc.tenDanhMucKhoaHoc}</p>
+                            <p className='textDetailTitle'>{courseDetail.danhMucKhoaHoc.tenDanhMucKhoaHoc}</p>
 
                             <div className='d-flex '>
                                 <span><Rate disabled allowHalf defaultValue={4.5} /></span>
-                                <span className='subTextDetail ml-4'>({detailCourse.luotXem} đánh giá)</span>
+                                <span className='subTextDetail ml-4'>({courseDetail.luotXem} đánh giá)</span>
                             </div>
                         </div>
                         <div className='col-3'>
                             <div className='detailRightPages'>
-                                <p className='textCardTitle'>{detailCourse.ngayTao}</p>
+                                <p className='textCardTitle'>{courseDetail.ngayTao}</p>
                                 <div className='mt-3'>
                                     <div>
-                                        <img src={detailCourse.hinhAnh} className='imgCardFooter' alt="" />
-                                        <span className='textCardTitle ml-2'>{detailCourse.nguoiTao.hoTen}</span>
+                                        <img src={courseDetail.hinhAnh} className='imgCardFooter' alt="" />
+                                        <span className='textCardTitle ml-2'>{courseDetail.nguoiTao.hoTen}</span>
                                     </div>
                                 </div>
                                 <div className='mt-3'>
-                                    <button className='custom-btn btnGlobal btnDetail' onClick={registerCourse}>Đăng ký</button>
+                                    <button className='custom-btn btnGlobal btnDetail' onClick={() =>{
+                                        registerCourse(props.match.params.maKhoaHoc)
+                                    }}>Đăng ký</button>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +54,7 @@ export default function DetailCourse(props) {
                                 <div className='detailContentPages'>
                                     <div className='detailContent'>
                                         <h4 className='titleDetailCard'>Thông tin về khóa học</h4>
-                                        <p className='textContentDetail'>Đây là lộ trình gồm 10 khóa combo Lập trình Front End Foundation. Combo này sẽ giúp các bạn luyện những vấn đề nền tảng cốt lõi và chuyên sâu nhất trong lộ trình nghề Front End. Khóa học gồm hơn 30 bài tập và dự án vô cùng thực tế xoay quanh từ HTML, CSS, HTML5, CSS3 đến nền tảng chuyên sâu SASS/SCSS, Bootstrap, FlexGird, Animation, Javascript, Javascript Prototype, Javascript ES6, Jquery,.... {detailCourse.moTa}</p>
+                                        <p className='textContentDetail'>Đây là lộ trình gồm 10 khóa combo Lập trình Front End Foundation. Combo này sẽ giúp các bạn luyện những vấn đề nền tảng cốt lõi và chuyên sâu nhất trong lộ trình nghề Front End. Khóa học gồm hơn 30 bài tập và dự án vô cùng thực tế xoay quanh từ HTML, CSS, HTML5, CSS3 đến nền tảng chuyên sâu SASS/SCSS, Bootstrap, FlexGird, Animation, Javascript, Javascript Prototype, Javascript ES6, Jquery,.... {courseDetail.moTa}</p>
                                     </div>
 
                                     <div className='detailContent'>
@@ -114,7 +88,7 @@ export default function DetailCourse(props) {
                                         <div>
                                             <div className='iconDetail'>
                                                 <i class="fas fa-user-graduate iconStudentDetail"></i>
-                                                <span className='subTextDetail'>{detailCourse.soLuongHocVien} Học viên</span>
+                                                <span className='subTextDetail'>{courseDetail.soLuongHocVien} Học viên</span>
                                             </div>
                                             <div className='iconDetail'>
                                                 <i class="far fa-money-bill-alt iconMoneyDetail"></i>
@@ -163,7 +137,6 @@ export default function DetailCourse(props) {
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     )

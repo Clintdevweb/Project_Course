@@ -5,26 +5,21 @@ import { Tabs, Rate, Progress } from 'antd';
 import * as Yup from 'yup'
 
 import PaginationPages from '../../Components/Pagination/PaginationPages';
+import { getUserInfo, loadMyCourse, _userUpdate } from '../../Redux/action/UserAction';
 import './PersonalPages.css'
-import { http } from '../../Util/setting';
-import { loadMyCourse, _userUpdate } from '../../Redux/action/UserAction';
+import UserInfo from '../../Components/UserInfo/UserInfo';
+import UserCourse from '../../Components/UserCourse/UserCourse';
 
 const { TabPane } = Tabs;
+
 export default function PersonalPages(props) {
     const dispatch = useDispatch()
 
-    const {credentials, myCourseDetail} = useSelector(state => state.UserReducer)
-    console.log('myCourseDetail', myCourseDetail)
-    console.log('credentials', credentials)
-    
+    const { credentials, userPersonalInfo } = useSelector(state => state.UserReducer)
 
     const _handleUpdate = (values, formik) => {
         const action = _userUpdate(values, formik)
         dispatch(action)
-    }
-
-    const RenderUserCourses = () => {
-        return;
     }
 
     // Formik form 
@@ -60,17 +55,12 @@ export default function PersonalPages(props) {
         }),
         onSubmit: _handleUpdate
     })
-
-    // useEffect(async () => {
-    //     const action = await loadMyCourse(credentials.chiTietKhoaHocGhiDanh)
-    //     dispatch (action)
-    // }, [])
-    
-    useEffect(() => {
-        const action = loadMyCourse(credentials.chiTietKhoaHocGhiDanh)
-        dispatch (action)
-        console.log('staertr123');
-    }, []) 
+   
+    useEffect(() => {     
+        dispatch(loadMyCourse(userPersonalInfo.chiTietKhoaHocGhiDanh))   
+        dispatch(getUserInfo)
+        
+    }, [])
 
     return (
         <div>
@@ -102,174 +92,10 @@ export default function PersonalPages(props) {
                 <div className='personalContent'>
                     <Tabs defaultActiveKey="1" >
                         <TabPane tab="Thông tin cá nhân" key="1">
-                            <div className=''>
-                                <div className='infoContentTop'>
-                                    <div className='row left'>
-                                        <div className='col-6'>
-                                            <div>
-                                                <p>Email:<span className='ml-2'>{credentials.email}</span></p>
-                                                <p>Họ và tên: <span className='ml-2'>{credentials.hoTen}</span></p>
-                                                <p>Số điện thoại: <span className='ml-2'>{credentials.soDt ? credentials.soDt : credentials.soDT}</span></p>
-
-                                            </div>
-                                        </div>
-                                        <div className='col-6'>
-                                            <p>Tài khoản: <span className='ml-2'>{credentials.taiKhoan}</span></p>
-                                            <p>Nhóm: <span className='ml-2'>{credentials.maNhom}</span></p>
-                                            <p>Đối tượng: <span className='ml-2'>{credentials.maLoaiNguoiDung === "HV" ? " Học viên" : " Giáo viên"}</span></p>
-                                        </div>
-                                        <div>
-                                            <button data-toggle="modal" data-target="#myModal" className='custom-btn btnGlobal btnInfo'>Cập nhật</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='row'>
-                                    <div className='col-8'>
-                                        <div className='infoContentBot'>
-                                            <div>
-                                                <h4 className='findTitle'>Kĩ năng của tôi</h4>
-
-                                                <div className='skillBody'>
-                                                    <button className='customSkillBtn skillBtnHtml mr-2'>HTML</button>
-                                                    <Progress percent={100} strokeColor='#F9CA9A' showInfo={false} />
-                                                </div>
-                                                <div className='skillBody'>
-                                                    <button className='customSkillBtn  skillBtnCss mr-2'>CSS</button>
-                                                    <Progress percent={30} strokeColor='#F8BEBB' showInfo={false} />
-                                                </div>
-                                                <div className='skillBody'>
-                                                    <button className='customSkillBtn skillBtnJs mr-2'>JS</button>
-                                                    <Progress percent={50} strokeColor='#F9D678' showInfo={false} />
-                                                </div>
-                                                <div className='skillBody'>
-                                                    <button className='customSkillBtn mr-2 skillBtnReact'>React</button>
-                                                    <Progress percent={80} strokeColor='#113D3C' showInfo={false} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className='col-4'>
-                                        <div className='row infoContentBot'>
-                                            <div className='col-6'>
-                                                <div className='rightTitleContent'>
-                                                    <div className='rightContent'>
-                                                        <i class="fas fa-user-clock mr-2"></i>
-                                                        <div>
-                                                            <h6>Giờ học</h6>
-                                                            <p>80 giờ</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className='col-6'>
-                                                <div className='rightTitleContent'>
-                                                    <div className='rightContent'>
-                                                        <i class="fas fa-user-clock mr-2"></i>
-                                                        <div>
-                                                            <h6>Buổi học</h6>
-                                                            <p>40</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className='col-6'>
-                                                <div className='rightTitleContent'>
-                                                    <div className='rightContent'>
-                                                        <i class="fas fa-user-clock mr-2"></i>
-                                                        <div>
-                                                            <h6>Bài tập</h6>
-                                                            <p>4</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className='col-6'>
-                                                <div className='rightTitleContent'>
-                                                    <div className='rightContent'>
-                                                        <i class="fas fa-user-clock mr-2"></i>
-                                                        <div>
-                                                            <h6>Điểm tổng</h6>
-                                                            <p>98</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className='col-6'>
-                                                <div className='rightTitleContent'>
-                                                    <div className='rightContent'>
-                                                        <i class="fas fa-user-clock mr-2"></i>
-                                                        <div>
-                                                            <h6>Cấp độ</h6>
-                                                            <p>Trung cấp</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className='col-6'>
-                                                <div className='rightTitleContent'>
-                                                    <div className='rightContent'>
-                                                        <i class="fas fa-user-clock mr-2"></i>
-                                                        <div>
-                                                            <h6>Học lực</h6>
-                                                            <p>Giỏi</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
+                            <UserInfo />
                         </TabPane>
                         <TabPane tab="Khóa học" key="2">
-                            <div className='findCourse'>
-                                <h4 className='findTitle'>Khóa học của tôi</h4>
-                                <input className='searchForm GlobalForm' type="text" placeholder='Tìm kiếm ...' />
-                            </div>
-                            
-                            {RenderUserCourses()}
-                            {myCourseDetail.map((course, index) => {
-            return (
-                <div key={index} className='searchModel cardSearchBox'>
-                    <div className='row'>
-                        <div className='col-3'>
-                            <img className='imgSearch' src={course.hinhAnh} alt="..." />
-                        </div>
-                        <div className='col-7'>
-                            <btn className='btnCard'>{course.danhMucKhoaHoc.tenDanhMucKhoaHoc}</btn>
-                            <h4 className="textCard textCardSearch">{course.tenKhoaHoc}</h4>
-                            <p className='textCardSearch'>{course.moTa}</p>
-
-                            <div className='textCardSearch'>
-                                <span className='textCardTitle'><i class="far fa-clock iconOclock"></i> 8 giờ 21 phút</span>
-                                <span className='textCardTitle'><i class="far fa-calendar iconCalendar"></i> 23 giờ</span>
-                                <span className='textCardTitle'><i class="fas fa-signal iconLevel "></i> All level</span>
-                            </div>
-
-                            <div className='d-flex'>
-                                <span><Rate disabled allowHalf defaultValue={4.5} /></span>
-
-                            </div>
-
-                            <div className=''>
-                                <div>
-                                    <img src={require("../../Assets/Img/imgCard/personcard.jpg").default} className='imgCardFooter' alt="" />
-                                    <span className='textCardTitle'> {course.nguoiTao.hoTen}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col-2 cancelBody'>
-                            <div className=''>
-                                <btn className='btnGlobal custom-btn'>Hủy khóa học</btn>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )
-        })}
-                                                  
+                            <UserCourse />            
                             <div className='mt-3'>
                                 <PaginationPages />
                             </div>
